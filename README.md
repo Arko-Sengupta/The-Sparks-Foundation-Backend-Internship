@@ -84,17 +84,6 @@ API Starts At `http://localhost:8000`. Interactive Docs At `http://localhost:800
 | GET    | `/`                     | No       | Health Check                 |
 | GET    | `/health`               | No       | Health Check                 |
 
-## Features
-
-- JWT Authentication With Configurable Expiry
-- Signup With Account Type (Savings / Current) And PAN Validation
-- Real-Time Balance Debit/Credit On Fund Transfers
-- Automatic Credit Entry For In-System Beneficiaries
-- Insufficient Balance Guard On Transfers
-- Centralized Firebase Credentials Via `.env`
-- Proper Try-Except Error Handling Across All Functions
-- Firestore As Serverless NoSQL Database
-
 ## Project Structure
 
 ```
@@ -120,40 +109,6 @@ The-Sparks-Foundation-Internship-Backend/
 ├── .gitignore
 └── README.md
 ```
-
-## Vercel Deployment
-
-1. Push The Repository To GitHub.
-
-2. Go To [vercel.com](https://vercel.com), Import The Repository, And Set The Following:
-
-   - **Framework Preset:** Other
-   - **Root Directory:** `The-Sparks-Foundation-Internship-Backend`
-
-3. Add All Environment Variables From `.env` In Vercel Project Settings:
-
-   | Variable                          | Value                        |
-   | --------------------------------- | ---------------------------- |
-   | `JWT_SECRET`                      | `<your_secret>`              |
-   | `JWT_ALGORITHM`                   | `HS256`                      |
-   | `JWT_EXPIRE_MINUTES`              | `1440`                       |
-   | `FIREBASE_TYPE`                   | `service_account`            |
-   | `FIREBASE_PROJECT_ID`             | `<your_project_id>`          |
-   | `FIREBASE_PRIVATE_KEY_ID`         | `<your_private_key_id>`      |
-   | `FIREBASE_PRIVATE_KEY`            | `<your_private_key>`         |
-   | `FIREBASE_CLIENT_EMAIL`           | `<your_client_email>`        |
-   | `FIREBASE_CLIENT_ID`              | `<your_client_id>`           |
-   | `FIREBASE_AUTH_URI`               | `https://accounts.google.com/o/oauth2/auth` |
-   | `FIREBASE_TOKEN_URI`              | `https://oauth2.googleapis.com/token` |
-   | `FIREBASE_AUTH_PROVIDER_CERT_URL` | `https://www.googleapis.com/oauth2/v1/certs` |
-   | `FIREBASE_CLIENT_CERT_URL`        | `<your_client_cert_url>`     |
-   | `FIREBASE_UNIVERSE_DOMAIN`        | `googleapis.com`             |
-
-4. The `vercel.json` At The Root Routes All Requests To `main.py`. Vercel Picks Up The `app` Variable Exported From `main.py` As The ASGI Entry Point.
-
-5. Click **Deploy**. API Will Be Live At `https://<your-project>.vercel.app`.
-
-> **Note:** After Deploying The Backend, Copy The Vercel URL And Set It As `VITE_API_URL` In The Frontend Vercel Project Settings.
 
 ## Contribution
 
