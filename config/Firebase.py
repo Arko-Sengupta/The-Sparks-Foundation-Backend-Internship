@@ -1,18 +1,20 @@
-import os
 import firebase_admin
+
+from fastapi import HTTPException
 from firebase_admin import credentials, firestore
-from dotenv import load_dotenv
 
-load_dotenv()
+from config.Secrets import FirebaseCredentials
 
-_db = None
+Db = None
 
 def GetDb():
-    global _db
-    if _db is None:
-        ServiceAccountPath = os.getenv("FIREBASE_SERVICE_ACCOUNT_PATH", "serviceAccount.json")
-        if not firebase_admin._apps:
-            Cred = credentials.Certificate(ServiceAccountPath)
-            firebase_admin.initialize_app(Cred)
-        _db = firestore.client()
-    return _db
+    global Db
+    try:
+        if Db is None:
+            if not firebase_admin._apps:
+                Cred = credentials.Certificate(FirebaseCredentials)
+                firebase_admin.initialize_app(Cred)
+            Db = firestore.client()
+        return Db
+    except Exception as E:
+        raise HTTPException(status_code=500, detail=f"Firebase initialization failed: {str(E)}")
