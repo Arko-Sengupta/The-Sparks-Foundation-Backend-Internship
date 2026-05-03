@@ -48,6 +48,17 @@ async def CreateTransaction(UserId: str, Data: CreateTransactionRequest) -> Tran
         if not UserSnap.exists:
             raise HTTPException(404, "User not found")
 
+        BeneficiaryResults = None
+        if Data.bankName == "TSF Bank":
+            BeneficiaryResults = Db.collection("users").where("accountNumber", "==", Data.accountNumber).get()
+            if not BeneficiaryResults:
+                raise HTTPException(404, "No TSF Bank account found with this account number")
+            BeneficiaryData = BeneficiaryResults[0].to_dict()
+            if BeneficiaryData.get("fullName", "").strip().lower() != Data.beneficiaryName.strip().lower():
+                raise HTTPException(400, "Beneficiary name does not match the account holder's name")
+            if BeneficiaryResults[0].id == UserId:
+                raise HTTPException(400, "Cannot transfer funds to your own account")
+
         SenderBalance = UserSnap.to_dict().get("balance", 0.0)
         if SenderBalance < Data.amount:
             raise HTTPException(400, "Insufficient balance")
@@ -67,8 +78,7 @@ async def CreateTransaction(UserId: str, Data: CreateTransactionRequest) -> Tran
             "balance": SenderBalance - Data.amount
         })
 
-        BeneficiaryResults = Db.collection("users").where("accountNumber", "==", Data.accountNumber).get()
-        if BeneficiaryResults:
+        if Data.bankName == "TSF Bank":
             Beneficiary        = BeneficiaryResults[0]
             BeneficiaryBalance = Beneficiary.to_dict().get("balance", 0.0)
             Db.collection("users").document(Beneficiary.id).update({
